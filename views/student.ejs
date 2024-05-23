@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Student</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="index.php">ระบบจัดการข้อมูลนักศึกษาสาขาเทคโนโลยีสารสนเทศ</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Login</a>
+              </li>
+      
+            </ul>
+      
+          </div>
+        </div>
+    </nav>
+    <div class="container">
+        <br>
+        <h1>แสดงข้อมูลนักศึกษา</h1>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <a href="/addstudents" class="btn btn-primary">เพิ่มข้อมูล</a>
+        </div>
+        <hr>
+        <table id="stdTable" class="">
+            <thead>
+                <tr>
+                    <th>รหัสนักศึกษา</th>
+                    <th>ชื่อสกุล</th>
+                    <th>เบอร์โทร</th>
+                    <th>อีเมล</th>
+                    <th>หมู่เรียน</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.stdID %></td>
+                        <td><%= user.name %></td>
+                        <td><%= user.phone_no %></td>
+                        <td><%= user.email %></td>
+                        <td><%= user.room %></td>
+                        <td>
+                            <a href="/editStudent?id=<%= user.id %>" class="btn btn-warning btn-sm">แก้ไข</a>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(<%= user.id %>)">ลบ</button>
+                        </td>  
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#stdTable').DataTable();
+        });
+
+        function confirmDelete(id) {
+            if (confirm('คุณแน่ใจหรือว่าต้องการลบข้อมูลนี้?')) {
+                $.ajax({
+                    url: `/students/${id}`,
+                    type: 'DELETE',
+                    success: function(result) {
+                        alert('ลบข้อมูลสำเร็จ');
+                        window.location.reload(); // โหลดหน้าใหม่เพื่อแสดงข้อมูลล่าสุด
+                    },
+                    error: function(err) {
+                        alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
